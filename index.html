@@ -851,7 +851,8 @@
         var r = card.getBoundingClientRect();
         var nx = (mx - (r.left + r.width / 2)) / (r.width / 2);
         var ny = (my - (r.top + r.height / 2)) / (r.height / 2);
-        return Math.min(1, Math.max(Math.abs(nx), Math.abs(ny)));
+        var m = Math.min(1, Math.max(Math.abs(nx), Math.abs(ny)));
+        return m * m;   // quadratic: dim across a wide central band, full only near the edge
       }
 
       function apply(t) {
@@ -878,8 +879,8 @@
           if (d > P / 2) d -= P;
           else if (d < -P / 2) d += P;
           // glide while visible; snap while dim so it fades out near the centre and reappears at the new edge
-          cur += d * (glowC < 0.25 ? 1 : 0.04);
-          glowC += (glowT - glowC) * 0.14;
+          cur += d * (glowC < 0.3 ? 1 : 0.05);
+          glowC += (glowT - glowC) * 0.5;
           apply(cur);
           fx.style.setProperty('--glow', glowC.toFixed(3));
         }
